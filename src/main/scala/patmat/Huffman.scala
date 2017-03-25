@@ -18,18 +18,33 @@ object Huffman {
    * present in the leaves below it. The weight of a `Fork` node is the sum of the weights of these
    * leaves.
    */
-    abstract class CodeTree
-  case class Fork(left: CodeTree, right: CodeTree, chars: List[Char], weight: Int) extends CodeTree
-  case class Leaf(char: Char, weight: Int) extends CodeTree
-  
 
-  // Part 1: Basics
-    def weight(tree: CodeTree): Int = ??? // tree match ...
-  
-    def chars(tree: CodeTree): List[Char] = ??? // tree match ...
-  
-  def makeCodeTree(left: CodeTree, right: CodeTree) =
-    Fork(left, right, chars(left) ::: chars(right), weight(left) + weight(right))
+  abstract class CodeTree
+    case class Fork(left: CodeTree, right: CodeTree, chars: List[Char], weight: Int) extends CodeTree
+    case class Leaf(char: Char, weight: Int) extends CodeTree
+
+
+    // Part 1: Basics
+    def weight(tree: CodeTree): Int = tree match {
+      // should return the total weight of a given Huffman tree.
+      // create fork
+      case Fork(left, right, chars, weight) => weight
+
+      // create leaf
+      case Leaf(char, weight) => weight
+    }
+
+    def chars(tree: CodeTree): List[Char] = tree match {
+      // should returns the list of characters defined in a given Huffman tree
+      // create fork
+      case Fork(left, right, chars, weight) => chars
+
+      // create leaf
+      case Leaf(char, weight) => List(char)
+    }
+
+    def makeCodeTree(left: CodeTree, right: CodeTree) =
+      Fork(left, right, chars(left) ::: chars(right), weight(left) + weight(right))
 
 
 
