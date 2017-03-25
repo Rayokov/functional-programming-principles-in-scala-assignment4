@@ -163,11 +163,11 @@ object Huffman {
    * the resulting list of characters.
    */
     def decode(tree: CodeTree, bits: List[Bit]): List[Char] = {
-      def loop(tree: CodeTree, bits: List[Bit]): List[Char] = tree match {
-        case Fork(left, right, chars, weight) if (bits.head == 0) => loop(left, bits.tail)
-        case Fork(left, right, chars, weight) => loop(right, bits.tail)
-        case Leaf(char, weight) if (bits.isEmpty) => List(char)
+      def loop(remainingTree: CodeTree, bits: List[Bit]): List[Char] = remainingTree match {
+        case Leaf(char, weight) if bits.isEmpty => List(char)
         case Leaf(char, weight) => char :: loop(tree, bits)
+        case Fork(left, right, chars, weight) if bits.head == 0 => loop(left, bits.tail)
+        case Fork(left, right, chars, weight) => loop(right, bits.tail)
       }
       loop(tree, bits)
     }
@@ -181,7 +181,7 @@ object Huffman {
 
   /**
    * What does the secret message say? Can you decode it?
-   * For the decoding use the `frenchCode' Huffman tree defined above.
+   * For the decoding use the 'frenchCode' Huffman tree defined above.
    */
   val secret: List[Bit] = List(0,0,1,1,1,0,1,0,1,1,1,0,0,1,1,0,1,0,0,1,1,0,1,0,1,1,0,0,1,1,1,1,1,0,1,0,1,1,0,0,0,0,1,0,1,1,1,0,0,1,0,0,1,0,0,0,1,0,0,0,1,0,1)
 
@@ -197,8 +197,16 @@ object Huffman {
    * This function encodes `text` using the code tree `tree`
    * into a sequence of bits.
    */
-    def encode(tree: CodeTree)(text: List[Char]): List[Bit] = ???
-  
+  def encode(tree: CodeTree)(message: List[Char]): List[Bit] = {
+      def loop(tree:  CodeTree)(char: Char): List[Bit] = tree match {
+        case Fork(left, right, thisChars, weight) if chars(left).contains(char) => 0 :: loop(left)(char)
+        case Fork(left, right, thisChars, weight) => 1 :: loop(right)(char)
+        case Leaf(char, weight) => List()
+      }
+      message flatMap loop(tree)
+  }
+
+
   // Part 4b: Encoding using code table
 
   type CodeTable = List[(Char, List[Bit])]
