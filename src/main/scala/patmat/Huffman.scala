@@ -1,6 +1,7 @@
 package patmat
 
 import common._
+import patmat.Huffman.chars
 
 /**
  * Assignment 4: Huffman coding
@@ -84,7 +85,8 @@ object Huffman {
    *       println("integer is  : "+ theInt)
    *   }
    */
-    def times(chars: List[Char]): List[(Char, Int)] = ???
+    def times(chars: List[Char]): List[(Char, Int)] =
+      chars map (char => (char, chars count {_ == char}))
   
   /**
    * Returns a list of `Leaf` nodes for a given frequency table `freqs`.
@@ -140,6 +142,10 @@ object Huffman {
    * frequencies from that text and creates a code tree based on them.
    */
     def createCodeTree(chars: List[Char]): CodeTree = ???
+//  chars match {
+//      case char :: chars1 => until(singleton, combine)(makeOrderedLeafList(times(chars))).head
+//      case Nil => throw new Error("need list of characters")
+//    }
   
 
   // Part 3: Decoding
